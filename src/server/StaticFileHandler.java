@@ -9,7 +9,6 @@ import java.util.Map;
 public class StaticFileHandler {
     private static final String BASE_DIR = "src/files";
 
-    // Mapping file extensions to content types
     private static final Map<String, String> MIME_TYPES = new HashMap<>();
     static {
         MIME_TYPES.put("html", "text/html");
@@ -37,7 +36,6 @@ public class StaticFileHandler {
                 out.println("Content-Type: " + contentType);
                 out.println();
 
-                // Handle binary or text files
                 if (contentType.equals("application/octet-stream") || extension.equals("jpg") || extension.equals("png")) {
                     sendBinaryFile(file, out);
                 } else {
@@ -83,7 +81,6 @@ public class StaticFileHandler {
         out.println("<h1>500 Internal Server Error</h1>");
     }
 
-    // Helper method to get the file extension
     private static String getFileExtension(File file) {
         String name = file.getName();
         int dotIndex = name.lastIndexOf('.');
