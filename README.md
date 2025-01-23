@@ -1,4 +1,4 @@
-# WebServer
+# MultiThreaded WebServer
 
 A lightweight multithreaded web server built in Java, designed to handle multiple clients and provide static file serving and basic RESTful API functionality.
 
