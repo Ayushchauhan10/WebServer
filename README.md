@@ -15,21 +15,7 @@ A lightweight multithreaded web server built in Java, designed to handle multipl
   - **POST**: `http://localhost:8080/api?key=value`
   - **PUT**: `http://localhost:8080/api?key=newValue`
   - **DELETE**: `http://localhost:8080/api?key`
-
-## Project Structure
-```
-Project Root
-|— src/
-   |— server/
-   |   |— WebServer.java        # Main server class
-   |   |— ClientHandler.java     # Handles client requests
-   |   |— StaticFileHandler.java # Serves static files
-   |   |— APIHandler.java        # Processes API requests
-   |— files/
-       |— index.html            # Sample static file
-       |— style.css             # CSS for styling
-       |— data.txt              # Temporary data storage for API
-```
+    
 
 ## Performance Metrics
 - **Throughput**: 500 requests/second
