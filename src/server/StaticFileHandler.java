@@ -2,7 +2,6 @@ package src.server;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +21,13 @@ public class StaticFileHandler {
     }
 
     public static void handleStaticFile(String resource, PrintWriter out) {
-        if (resource.equals("/")) resource = "/index.html";
+        if (resource.equals("/css")) {
+            resource = "/style.css";
+        } else if (resource.equals("/txt")) {
+            resource = "/data.txt";
+        } else if(resource.equals("/html") || resource.equals("/")) {
+            resource = "/index.html";
+        }
 
         String filePath = BASE_DIR + resource;
         File file = new File(filePath);
@@ -36,11 +41,7 @@ public class StaticFileHandler {
                 out.println("Content-Type: " + contentType);
                 out.println();
 
-                if (contentType.equals("application/octet-stream") || extension.equals("jpg") || extension.equals("png")) {
-                    sendBinaryFile(file, out);
-                } else {
-                    sendTextFile(file, out);
-                }
+                sendTextFile(file, out);
 
                 System.out.println("Served static file: " + filePath);
             } else {
@@ -54,16 +55,6 @@ public class StaticFileHandler {
 
     private static void sendTextFile(File file, PrintWriter out) throws IOException {
         Files.lines(file.toPath()).forEach(out::println);
-    }
-
-    private static void sendBinaryFile(File file, PrintWriter out) throws IOException {
-        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = in.read(buffer)) != -1) {
-                out.write(new String(buffer, 0, bytesRead));
-            }
-        }
     }
 
     private static void send404(PrintWriter out, String filePath) {

@@ -13,24 +13,35 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
+        try (
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)
+        ) {
+            String requestLine = in.readLine();
 
-            String requestLine;
-            while ((requestLine = in.readLine()) != null) {
-                if (requestLine.isEmpty()) break;
-
+            if (requestLine != null && !requestLine.isEmpty()) {
                 System.out.println("Request: " + requestLine);
-                StringTokenizer tokenizer = new StringTokenizer(requestLine);
-                String method = tokenizer.nextToken();
-                String resource = tokenizer.nextToken();
 
-                if (resource.startsWith("/api")) {
-                    APIHandler.handleAPIRequest(method, resource, out);
-                } else if (resource.startsWith("/message")) {
-                    MessageHandler.handleMessageRequest(resource, out);
+                StringTokenizer tokenizer = new StringTokenizer(requestLine);
+                if (tokenizer.countTokens() >= 2) {
+                    String method = tokenizer.nextToken().trim();
+                    String resource = tokenizer.nextToken().trim();
+
+                    System.out.println("Method: " + method);
+                    System.out.println("Resource: " + resource);
+
+                    if (resource.startsWith("/api")) {
+                        APIHandler.handleAPIRequest(method, resource, out);
+                    } else if (resource.startsWith("/message")) {
+                        MessageHandler.handleMessageRequest(resource, out);
+                    } else {
+                        StaticFileHandler.handleStaticFile(resource, out);
+                    }
                 } else {
-                    StaticFileHandler.handleStaticFile(resource, out);
+                    out.println("HTTP/1.1 400 Bad Request");
+                    out.println("Content-Type: text/html");
+                    out.println();
+                    out.println("<h1>400 Bad Request</h1>");
                 }
             }
         } catch (IOException e) {
